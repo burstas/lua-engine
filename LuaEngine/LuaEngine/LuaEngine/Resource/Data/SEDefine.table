@@ -1,0 +1,9 @@
+Index	SEName	Filename
+1	SE_SYSTEM_SELECT	SE\system_select.wav
+2	SE_SYSTEM_OK	SE\system_ok.wav
+3	SE_SYSTEM_CANCEL	SE\system_cancel.wav
+4	SE_SYSTEM_PAUSE	SE\system_pause.wav
+5	SE_GAME_DOWN	SE\game_down.wav
+6	SE_GAME_FLAT	SE\game_flat.wav
+7	SE_GAME_UP	SE\game_up.wav
+8	SE_GAME_GAMEOVER	SE\game_gameover.wav
