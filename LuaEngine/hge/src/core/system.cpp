@@ -121,10 +121,10 @@ bool CALL HGE_Impl::System_Initiate()
 	rectW.bottom=rectW.top+height;
 	styleW=WS_POPUP|WS_CAPTION|WS_SYSMENU|WS_MINIMIZEBOX|WS_VISIBLE; //WS_OVERLAPPED | WS_SYSMENU | WS_MINIMIZEBOX;
 
-	rectFS.left=(GetSystemMetrics(SM_CXFULLSCREEN)-width)/4;
-	rectFS.top=(GetSystemMetrics(SM_CYFULLSCREEN)-height)/4;
-	rectFS.right=rectFS.left+width;
-	rectFS.bottom=rectFS.top+height;
+	rectFS.left=(GetSystemMetrics(SM_CXFULLSCREEN)-nScreenWidth)/2;
+	rectFS.top=(GetSystemMetrics(SM_CYFULLSCREEN)-nScreenHeight)/2;
+	rectFS.right=rectFS.left+nScreenWidth;
+	rectFS.bottom=rectFS.top+nScreenHeight;
 	styleFS=WS_POPUP|WS_VISIBLE; //WS_POPUP
 
 	if(hwndParent)
@@ -164,19 +164,22 @@ bool CALL HGE_Impl::System_Initiate()
 	/* These lines are added by h5nc (h5nc@yahoo.com.cn)                    */
 	/************************************************************************/
 	// begin
-	haveJoy = true;
+	for (int i=0; i<DIJOY_MAXDEVICE; i++)
+	{
+		haveJoy[i] = true;
+	}
 	
-	ZeroMemory(&joyState, sizeof(DIJOYSTATE));
-	ZeroMemory(&lastJoyState, sizeof(DIJOYSTATE));
+	ZeroMemory(joyState, sizeof(DIJOYSTATE)*DIJOY_MAXDEVICE);
+	ZeroMemory(lastJoyState, sizeof(DIJOYSTATE)*DIJOY_MAXDEVICE);
 
-	switch(_DIInit())
+	int diinitret = _DIInit();
+	switch(diinitret)
 	{
 	case ERROR_NOKEYBOARD:
 	case ERROR_NOKEYBOARD | ERROR_NOJOYSTICK:
 		System_Shutdown();
 		return false;
 	case ERROR_NOJOYSTICK:
-		haveJoy = false;
 		break;
 	}
 	if(!_GfxInit()) { System_Shutdown(); return false; }
@@ -307,7 +310,6 @@ bool CALL HGE_Impl::System_Start()
 					DI_retv = _DIUpdate();
 					if(DI_retv & ERROR_NOJOYSTICK)
 					{
-						haveJoy = false;
 						if(DI_retv & ERROR_NOKEYBOARD)
 						{
 							break;
@@ -323,10 +325,6 @@ bool CALL HGE_Impl::System_Start()
 			else if(nFrameSkip < 2 || !(nFrameCounter % nFrameSkip))
 			{
 				DI_retv = _DIUpdate();
-				if(DI_retv & ERROR_NOJOYSTICK)
-				{
-					haveJoy = false;
-				}
 				if(procFrameFunc())
 				{
 					_ClearQueue();
@@ -486,9 +484,6 @@ void CALL HGE_Impl::System_SetStateBool(hgeBoolState state, bool value)
 								{
 									if(d3dppW.BackBufferFormat==D3DFMT_UNKNOWN || d3dppFS.BackBufferFormat==D3DFMT_UNKNOWN) break;
 
-									/************************************************************************/
-									/* Theis cakk is added by h5nc (h5nc@yahoo.com.cn)                      */
-									/************************************************************************/
 									if(procFocusLostFunc) procFocusLostFunc();
 
 									if(bWindowed) GetWindowRect(hwnd, &rectW);
@@ -833,8 +828,8 @@ HGE_Impl::HGE_Impl()
 	pCurTarget=0;
 	pScreenSurf=0;
 	pScreenDepth=0;
-	pVB=0;
-	pIB=0;
+	pVB=NULL;
+	pIB=NULL;
 	VertArray=0;
 	textures=0;
 

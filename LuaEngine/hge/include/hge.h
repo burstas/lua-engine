@@ -406,6 +406,8 @@ struct hge3DPoint
 #define JOY_RIGHT		0x50
 #define JOY_UP			0x60
 #define JOY_DOWN		0x70
+
+#define DIJOY_MAXDEVICE	4
 // end
 
 /*
@@ -714,8 +716,8 @@ public:
 	virtual LPDIRECTINPUT8 CALL Input_GetDevice() = 0;
 	virtual bool		CALL	Input_GetDIKey(int key, BYTE stateType = DIKEY_PRESSED) = 0;
 	virtual bool		CALL	Input_SetDIKey(int key, bool set = true) = 0;
-	virtual bool		CALL	Input_GetDIJoy(int joy, BYTE stateType = DIKEY_PRESSED) = 0;
-	virtual bool		CALL	Input_HaveJoy() = 0;
+	virtual bool		CALL	Input_GetDIJoy(int joy, BYTE stateType = DIKEY_PRESSED, int joydevice=0) = 0;
+	virtual bool		CALL	Input_HaveJoy(int joydevice=0) = 0;
 	// end
 
 	virtual bool		CALL	Gfx_BeginScene(HTARGET target=0) = 0;
@@ -752,8 +754,8 @@ public:
 	// begin
 	virtual HD3DFONT    CALL	Font_Load(const char * fontStyle,int height) = 0;
 	virtual void		CALL	Font_Free(HD3DFONT font) = 0;
-	virtual void		CALL	Gfx_RenderText(HD3DFONT font, const char * text, float x, float y, float w, float h, DWORD color = 0xffffffff) = 0;
-	virtual HTEXTURE	CALL	Gfx_RenderTextToTarget(HTARGET tar, HD3DFONT font, const char * text, float x, float y, float w, float h, DWORD color = 0xffffffff) = 0;
+	virtual int			CALL	Gfx_RenderText(HD3DFONT font, const char * text, float x, float y, float w, float h, DWORD color = 0xffffffff) = 0;
+	virtual int			CALL	Gfx_RenderTextToTarget(HTEXTURE * tex, HTARGET tar, HD3DFONT font, const char * text, float x, float y, float w, float h, DWORD color = 0xffffffff) = 0;
 	// end
 
 };

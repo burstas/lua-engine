@@ -204,8 +204,8 @@ public:
 	virtual LPDIRECTINPUT8 CALL Input_GetDevice();
 	virtual bool		CALL	Input_GetDIKey(int key, BYTE stateType = DIKEY_PRESSED);
 	virtual bool		CALL	Input_SetDIKey(int key, bool set = true);
-	virtual bool		CALL	Input_GetDIJoy(int joy, BYTE stateType = DIKEY_PRESSED);
-	virtual bool		CALL	Input_HaveJoy();
+	virtual bool		CALL	Input_GetDIJoy(int joy, BYTE stateType = DIKEY_PRESSED, int joydevice=0);
+	virtual bool		CALL	Input_HaveJoy(int joydevice=0);
 	//end
 
 	virtual bool		CALL	Gfx_BeginScene(HTARGET target=0);
@@ -239,8 +239,8 @@ public:
 	// begin
 	virtual HD3DFONT    CALL	Font_Load(const char * fontStyle, int height);
 	virtual void		CALL	Font_Free(HD3DFONT font);
-	virtual void		CALL	Gfx_RenderText(HD3DFONT font, const char * text, float x, float y, float w, float h, DWORD color = 0xffffffff);
-	virtual HTEXTURE	CALL	Gfx_RenderTextToTarget(HTARGET tar, HD3DFONT font, const char * text, float x, float y, float w, float h, DWORD color = 0xffffffff);
+	virtual int			CALL	Gfx_RenderText(HD3DFONT font, const char * text, float x, float y, float w, float h, DWORD color = 0xffffffff);
+	virtual int			CALL	Gfx_RenderTextToTarget(HTEXTURE * tex, HTARGET tar, HD3DFONT font, const char * text, float x, float y, float w, float h, DWORD color = 0xffffffff);
     // end
 	//////// Implementation ////////
 
@@ -385,15 +385,16 @@ public:
 	BYTE				lastKeyState[256];
 	LPDIRECTINPUT8		lpDInput;
 	LPDIRECTINPUTDEVICE8 lpDIKDevice;
-	GUID				joyGuid; 
-	LPDIRECTINPUTDEVICE8 lpDIJDevice;
-	DIJOYSTATE          joyState;
-	DIJOYSTATE          lastJoyState;
-	bool				haveJoy;
+	LPDIRECTINPUTDEVICE8 lpDIJDevice[DIJOY_MAXDEVICE];
+	DIJOYSTATE          joyState[DIJOY_MAXDEVICE];
+	DIJOYSTATE          lastJoyState[DIJOY_MAXDEVICE];
+	bool				haveJoy[DIJOY_MAXDEVICE];
+	static GUID			joyGuid[DIJOY_MAXDEVICE];
 
 	int					_DIInit();
 	void				_DIRelease();
 	int					_DIUpdate();
+	static BOOL CALLBACK _EnumJoysticksCallback (const DIDEVICEINSTANCE * pdidInstance, VOID* pContext);
 	// end
 
 
