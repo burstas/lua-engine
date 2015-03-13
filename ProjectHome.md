@@ -1,0 +1,1 @@
+Leah is a lua port to modified HGE. Leah covers all functions in HGE and some of its helpers. HGE (Haaf's Game Engine) is originally an open source 2D game engine. For HGE's information, visit http://hge.relishgames.com. Leah uses a HGE which is modified by h5nc. Leah uses LuaPlus to access lua with C++.
